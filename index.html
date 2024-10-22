@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galgenraten</title>
+  <style>
+    /* Hier kommen ein paar einfache CSS-Stile */
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .gallows img {
+      max-width: 200px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Halloween-Galgenraten</h1>
+  
+  <!-- Eingabe des Teamnamens -->
+  <div id="team-section">
+    <label for="teamname">Teamname:</label>
+    <input type="text" id="teamname" placeholder="Dein Teamname">
+    <button onclick="startGame()">Spiel starten</button>
+  </div>
+
+  <!-- Galgen-Animation -->
+  <div id="gallows-section" class="hidden">
+    <div class="gallows">
+      <img id="gallows-image" src="galgen0.png" alt="Galgen">
+    </div>
+
+    <!-- Das Wort zum Raten (es wird mit _ dargestellt) -->
+    <p id="word-display">_ _ _ _ _ _</p>
+
+    <!-- Eingabefeld für Buchstaben -->
+    <input type="text" id="letter-input" maxlength="1" placeholder="Buchstabe" oninput="guessLetter()">
+    <p id="message"></p>
+
+    <!-- Liste der falschen Buchstaben -->
+    <p>Falsche Buchstaben: <span id="wrong-letters"></span></p>
+    
+    <!-- Versuchsliste -->
+    <p>Verbleibende Versuche: <span id="attempts-left">6</span></p>
+
+    <button onclick="resetGame()">Nochmal spielen</button>
+  </div>
+
+  <!-- Tabelle mit den Spielergebnissen -->
+  <div id="results-section" class="hidden">
+    <h2>Ergebnisse</h2>
+    <table id="results-table">
+      <tr>
+        <th>Team</th>
+        <th>Ergebnis</th>
+        <th>Versuche</th>
+      </tr>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
