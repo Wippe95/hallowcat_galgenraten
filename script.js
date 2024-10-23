@@ -102,3 +102,44 @@ function resetGame() {
   document.getElementById("team-section").classList.remove("hidden");
   document.getElementById("results-section").classList.add("hidden");
 }
+
+// Funktion zum Senden der Spielergebnisse an Google Sheets über SheetDB
+function sendResultsToSheet(teamName, result, attempts) {
+  const data = {
+    "data": [
+      {
+        "Teamname": teamName,
+        "Ergebnis": result,
+        "Versuche": attempts
+      }
+    ]
+  };
+
+  // SheetDB API-URL, die du von SheetDB erhältst
+  const apiUrl = "https://sheetdb.io/api/v1/abcd1234";  // Ersetze durch deine SheetDB-URL
+
+  // Sende Daten mit einem HTTP POST Request
+  fetch(apiUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(json => {
+    console.log("Ergebnis erfolgreich an Google Sheet gesendet", json);
+  })
+  .catch(error => {
+    console.error("Fehler beim Senden der Daten:", error);
+  });
+}
+
+// Beispiel: Funktion, die am Ende des Spiels aufgerufen wird
+function endGame(result) {
+  const teamName = document.getElementById("teamname").value;
+  const attemptsLeft = 6 - attemptsLeft;  // Ersetze mit der tatsächlichen Anzahl der Versuche
+  
+  // Rufe die sendResultsToSheet-Funktion auf
+  sendResultsToSheet(teamName, result, attemptsLeft);
+}
