@@ -76,34 +76,11 @@ function guessLetter() {
     document.getElementById("gallows-image").src = gallowsImages[6 - attemptsLeft];
     
     if (attemptsLeft === 0) {
-      endGame("gehängt");
+      endGame("verloren");
     }
   }
 }
-
-// Beende das Spiel
-function endGame(result) {
-  const table = document.getElementById("results-table");
-  const row = table.insertRow();
-  row.insertCell(0).textContent = teamName;
-  row.insertCell(1).textContent = result;
-  row.insertCell(2).textContent = 6 - attemptsLeft;
-
-  document.getElementById("results-section").classList.remove("hidden");
-  document.getElementById("letter-input").disabled = true;
-  document.getElementById("message").textContent = result === "gewonnen" ? "Du hast es geschafft!" : `Du wurdest gehängt! Das Wort war: ${selectedWord}`;
-}
-
-// Spiel zurücksetzen
-function resetGame() {
-  document.getElementById("letter-input").disabled = false;
-  document.getElementById("message").textContent = "";
-  document.getElementById("gallows-section").classList.add("hidden");
-  document.getElementById("team-section").classList.remove("hidden");
-  document.getElementById("results-section").classList.add("hidden");
-}
-
-// Funktion zum Senden der Spielergebnisse an Google Sheets über SheetDB
+// Funktion zum Senden der Ergebnisse an Google Sheets über SheetDB
 function sendResultsToSheet(teamName, result, attempts) {
   const data = {
     "data": [
@@ -115,8 +92,8 @@ function sendResultsToSheet(teamName, result, attempts) {
     ]
   };
 
-  // SheetDB API-URL, die du von SheetDB erhältst
-  const apiUrl = "https://sheetdb.io/api/v1/m9xyqpyrkxqlz";  // Ersetzt durch meine SheetDB-URL
+  // SheetDB API-URL (ersetze YOUR_SHEETDB_API_KEY durch deine API-URL)
+  const apiUrl = "https://sheetdb.io/api/v1/m9xyqpyrkxqlz";
 
   // Sende Daten mit einem HTTP POST Request
   fetch(apiUrl, {
@@ -135,11 +112,36 @@ function sendResultsToSheet(teamName, result, attempts) {
   });
 }
 
-// Beispiel: Funktion, die am Ende des Spiels aufgerufen wird
+// Funktion, die am Ende des Spiels aufgerufen wird
 function endGame(result) {
-  const teamName = document.getElementById("teamname").value;
-  const attemptsLeft = 6 - attemptsLeft;  // Ersetze mit der tatsächlichen Anzahl der Versuche
-  
-  // Rufe die sendResultsToSheet-Funktion auf
-  sendResultsToSheet(teamName, result, attemptsLeft);
+  const attemptsUsed = 6 - attemptsLeft;  // Berechnete Anzahl der Versuche
+  document.getElementById("message").textContent = result === "gewonnen" ? "Du hast es geschafft!" : `Du wurdest gehängt! Das Wort war: ${selectedWord}`;
+
+  // Ergebnisse an Google Sheet senden
+  sendResultsToSheet(teamName, result, attemptsUsed);
 }
+
+// Funktion zum Abrufen der Ergebnisse aus Google Sheets über SheetDB
+function fetchResults() {
+  const apiUrl = "https://sheetdb.io/api/v1/m9xyqpyrkxqlz";
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      const resultsTable = document.getElementById("results-table");
+      data.forEach(entry => {
+        const row = resultsTable.insertRow();
+        row.insertCell(0).textContent = entry.Teamname;
+        row.insertCell(1).textContent = entry.Ergebnis;
+        row.insertCell(2).textContent = entry.Versuche;
+      });
+    })
+    .catch(error => console.error("Fehler beim Abrufen der Daten:", error));
+}
+
+// Ergebnisse beim Laden der Seite anzeigen
+window.onload = function() {
+  fetchResults();
+};
+
+
