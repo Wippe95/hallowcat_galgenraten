@@ -116,7 +116,7 @@ function sendResultsToSheet(teamName, result, attempts) {
   };
 
   // SheetDB API-URL, die du von SheetDB erhältst
-  const apiUrl = "https://sheetdb.io/api/v1/abcd1234";  // Ersetze durch deine SheetDB-URL
+  const apiUrl = "https://sheetdb.io/api/v1/m9xyqpyrkxqlz";  // Ersetzt durch meine SheetDB-URL
 
   // Sende Daten mit einem HTTP POST Request
   fetch(apiUrl, {
